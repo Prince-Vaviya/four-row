@@ -45,6 +45,12 @@ export function attachGame(io) {
   if (redisUrl) {
     const pubClient = new Redis(redisUrl, { maxRetriesPerRequest: 2, retryStrategy: (count) => Math.min(count * 250, 2000) });
     const subClient = pubClient.duplicate();
+    const logRedisError = (error) => {
+      const safeMessage = String(error?.message || 'unknown error').replace(/rediss?:\/\/\S+/gi, '[redis-url]');
+      console.error('[game] Redis client error', error?.code || error?.name || 'Error', safeMessage);
+    };
+    pubClient.on('error', logRedisError);
+    subClient.on('error', logRedisError);
     io.adapter(createAdapter(pubClient, subClient));
     redis = pubClient;
     ready = Promise.all([pubClient.ping(), subClient.ping()]);

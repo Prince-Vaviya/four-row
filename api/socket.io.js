@@ -4,6 +4,7 @@ import { Server } from 'socket.io';
 import { attachGame } from '../server/game.js';
 
 const app = express();
+app.get('/health', (_request, response) => response.status(200).json({ ok: true, service: 'four-row-realtime' }));
 const server = createServer(app);
 const io = new Server(server, { path: '/api/socket.io', transports: ['websocket'], pingInterval: 25000, pingTimeout: 20000, cors: { origin: true } });
 attachGame(io);
@@ -12,6 +13,9 @@ io.engine.on('connection_error', (error) => {
 });
 server.on('error', (error) => {
   console.error('[socket.io] HTTP server error', error.code, error.message);
+});
+server.on('upgrade', (request) => {
+  console.info('[socket.io] upgrade received', request.url?.split('?')[0] || '/');
 });
 
 export default server;
