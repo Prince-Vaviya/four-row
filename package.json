@@ -9,7 +9,9 @@
     "start": "node server/index.js"
   },
   "dependencies": {
+    "@socket.io/redis-adapter": "^8.3.0",
     "express": "^5.1.0",
+    "ioredis": "^6.0.0",
     "lucide-react": "^0.468.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",

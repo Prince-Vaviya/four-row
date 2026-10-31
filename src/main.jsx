@@ -4,7 +4,7 @@ import { io } from 'socket.io-client';
 import { ArrowLeft, ArrowUpRight, Check, CircleHelp, Copy, Crown, Link2, LoaderCircle, RotateCcw, Sparkles, Volume2, VolumeX, Wifi, WifiOff } from 'lucide-react';
 import './style.css';
 
-const socket = io({ autoConnect: false, reconnection: true, reconnectionAttempts: Infinity, reconnectionDelay: 700, reconnectionDelayMax: 4000 });
+const socket = io({ autoConnect: false, path: '/api/socket.io', addTrailingSlash: false, transports: ['websocket'], reconnection: true, reconnectionAttempts: Infinity, reconnectionDelay: 700, reconnectionDelayMax: 4000 });
 const getToken = () => { let token = localStorage.getItem('fourrow-token'); if (!token) { token = crypto.randomUUID(); localStorage.setItem('fourrow-token', token); } return token; };
 const storedToken = getToken();
 const COLORS = ['#f0a443', '#e76756'];
@@ -43,9 +43,10 @@ function App() {
         });
       }
     });
+    socket.on('connect_error', (cause) => { setConnected(false); setError(cause.message || 'The realtime service is unavailable. Try again shortly.'); });
     socket.on('disconnect', () => setConnected(false));
     socket.on('room:state', (state) => { setRoom(state); setScreen('game'); setBusy(false); });
-    return () => { socket.off('connect'); socket.off('disconnect'); socket.off('room:state'); };
+    return () => { socket.off('connect'); socket.off('connect_error'); socket.off('disconnect'); socket.off('room:state'); };
   }, []);
 
   useEffect(() => {

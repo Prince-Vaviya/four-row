@@ -27,13 +27,13 @@ npm start
 
 Then open `http://localhost:3001`.
 
-## Publish on Render
+## Publish on Vercel
 
-1. Push this project to a GitHub repository.
-2. In Render, create a **Web Service** connected to that repository.
-3. Use `npm install && npm run build` as the build command and `npm start` as the start command.
-4. Render supplies the public `onrender.com` URL. Share that URL or a room invite link with the other player.
+1. Push this project to the Git repository you want Vercel to use and import it into Vercel.
+2. In Vercel, add a Redis database through the Marketplace (or use an existing Redis provider) and add its `rediss://` connection URL as the `REDIS_URL` environment variable for the project.
+3. Deploy with the Vite build settings: `npm run build`, output directory `dist`. The `/api/socket.io` function is included in the repository.
+4. Share Vercel's public deployment URL or a room invite link with the other player.
 
-The app uses one Node service for both the built web page and Socket.IO game server. Room state lives in server memory, which is a good fit for this small MVP. Rooms disappear when the service restarts, so start a fresh room if that happens. A free Render instance may take around a minute to wake after it has been idle.
+Vercel hosts the web app and Socket.IO endpoint. Redis shares room state across function instances, so both players see the same game even if they connect to different instances. Vercel may close a WebSocket when its function reaches its maximum duration; the client reconnects and restores its room seat.
 
-Player seats can reconnect for 90 seconds using the browser's saved room token. No account, API key, or game database is required.
+Player seats can reconnect for 90 seconds using the browser's saved room token. No player accounts are required. The Redis connection string is a private deployment secret; add it in Vercel's project settings rather than committing it to this repository.
