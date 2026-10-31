@@ -51,7 +51,10 @@ export function attachGame(io) {
   } else if (process.env.NODE_ENV === 'production') {
     ready = Promise.reject(new Error('REDIS_URL is required for multi-instance game rooms.'));
   }
-  ready.catch(() => {});
+  ready.catch((error) => {
+    const safeMessage = String(error?.message || 'unknown error').replace(/rediss?:\/\/\S+/gi, '[redis-url]');
+    console.error('[game] Redis initialization failed', error?.code || error?.name || 'Error', safeMessage);
+  });
 
   const keyFor = (code) => `fourrow:room:${code}`;
   const getRoom = async (code) => {
