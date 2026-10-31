@@ -71,7 +71,7 @@ function App() {
   const playAgain = () => act('game:rematch', { code: room.code, playerId });
   const pieceClass = (piece) => piece ? `piece piece-${piece}` : 'piece';
 
-  return <main className="app-shell">
+  return <main className={`app-shell ${screen === 'game' ? 'in-game' : ''}`}>
     <header className="topbar">
       <button className="brand" onClick={leaveRoom} aria-label="Back to home"><span className="brand-mark"><i /><i /><i /><i /></span><span>four<span className="brand-accent">/</span>row</span></button>
       <div className="top-actions"><span className={`connection ${connected ? 'online' : ''}`}><span className="connection-dot" />{connected ? 'CONNECTED' : 'RECONNECTING'}</span><button className="icon-btn" onClick={() => setShowRules(true)} aria-label="How to play"><CircleHelp size={19} /></button></div>
