@@ -30,10 +30,10 @@ Then open `http://localhost:3001`.
 ## Publish on Vercel
 
 1. Push this project to the Git repository you want Vercel to use and import it into Vercel.
-2. In Vercel, add a Redis database through the Marketplace (or use an existing Redis provider) and add its `rediss://` connection URL as the `REDIS_URL` environment variable for the project.
+2. In Vercel, add an Upstash Redis database and connect it to this project. The integration provides `KV_URL`; the server also accepts `REDIS_URL` if you use another Redis provider.
 3. Deploy with the Vite build settings: `npm run build`, output directory `dist`. The `/api/socket.io` function is included in the repository.
 4. Share Vercel's public deployment URL or a room invite link with the other player.
 
 Vercel hosts the web app and Socket.IO endpoint. Redis shares room state across function instances, so both players see the same game even if they connect to different instances. Vercel may close a WebSocket when its function reaches its maximum duration; the client reconnects and restores its room seat.
 
-Player seats can reconnect for 90 seconds using the browser's saved room token. No player accounts are required. The Redis connection string is a private deployment secret; add it in Vercel's project settings rather than committing it to this repository.
+Player seats can reconnect for 90 seconds using the browser's saved room token. No player accounts are required. The Redis connection string is a private deployment secret; keep it in Vercel's environment settings rather than committing it to this repository.

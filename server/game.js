@@ -39,7 +39,7 @@ const redisCompareAndSet = `
 `;
 
 export function attachGame(io) {
-  const redisUrl = process.env.REDIS_URL;
+  const redisUrl = process.env.REDIS_URL || process.env.KV_URL;
   let redis = null;
   let ready = Promise.resolve();
   if (redisUrl) {
