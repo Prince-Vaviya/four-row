@@ -112,7 +112,7 @@ io.on('connection', (socket) => {
     if (!player) return;
     clearTimeout(player.timer); room.players = room.players.filter((p) => p !== player); socket.leave(room.code);
     if (!room.players.length) rooms.delete(room.code);
-    else { room.status = 'waiting'; room.winner = null; emitRoom(room); }
+    else { resetRoom(room); emitRoom(room); }
   });
 
   socket.on('disconnect', () => {
@@ -123,7 +123,7 @@ io.on('connection', (socket) => {
       player.timer = setTimeout(() => {
         if (player.connected) return;
         room.players = room.players.filter((p) => p !== player);
-        room.status = 'waiting'; room.winner = null;
+        resetRoom(room);
         if (!room.players.length) rooms.delete(room.code); else emitRoom(room);
       }, RESUME_MS);
     }
